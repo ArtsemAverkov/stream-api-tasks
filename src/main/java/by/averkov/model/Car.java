@@ -1,4 +1,4 @@
-package by.sologub.model;
+package by.averkov.model;
 
 public class Car {
     private int id;

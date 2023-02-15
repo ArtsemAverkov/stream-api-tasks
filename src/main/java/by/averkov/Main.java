@@ -1,17 +1,20 @@
-package by.sologub;
+package by.averkov;
 
-import by.sologub.model.Animal;
-import by.sologub.model.Car;
-import by.sologub.model.Flower;
-import by.sologub.model.House;
-import by.sologub.model.Person;
-import by.sologub.util.Util;
+import by.averkov.model.Animal;
+import by.averkov.model.Car;
+import by.averkov.model.Flower;
+import by.averkov.model.House;
+import by.averkov.model.Person;
+import by.averkov.utils.Util;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Stream;
+import java.time.Period;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -33,79 +36,228 @@ public class Main {
     }
 
     private static void task1() throws IOException {
+        AtomicInteger i = new AtomicInteger();
+        AtomicInteger j = new AtomicInteger(2);
+
         List<Animal> animals = Util.getAnimals();
-        //        animals.stream() Продолжить ...
+        animals.stream()
+                .filter((integer) -> integer.getAge() >= 10 && integer.getAge() < 20)
+                .sorted(Comparator.comparing(s->s.getAge()))
+                .peek(animal -> {
+                    System.out.println("ZOO №"+i +" "+ animal);
+                    boolean b = j.weakCompareAndSet(8, 1);
+                    if (b){
+                        i.incrementAndGet();
+                    }
+                    j.incrementAndGet();
+                })
+                .collect(Collectors.toList());
     }
 
     private static void task2() throws IOException {
         List<Animal> animals = Util.getAnimals();
-        //        animals.stream() Продолжить ...
-
+        animals.stream()
+                .filter(i -> i.getOrigin().equals("Japanese")&& i.getGender().equals("Female"))
+                .peek(animal -> animal.setBread(" UPPER_CASE"))
+                .forEach(animal -> System.out.println(animal.getBread().toString()));
     }
 
     private static void task3() throws IOException {
         List<Animal> animals = Util.getAnimals();
-        //        animals.stream() Продолжить ...
+       animals.stream()
+               .filter(animal -> animal.getAge() > 30 && animal.getOrigin().startsWith("A"))
+               .map(Animal::getOrigin)
+               .distinct()
+               .forEach(System.out::println);
     }
 
     private static void task4() throws IOException {
         List<Animal> animals = Util.getAnimals();
-        //        animals.stream() Продолжить ...
+        long count = animals.stream()
+                .map(Animal::getGender)
+                .filter(animal -> animal.equals("Female"))
+                .count();
+        System.out.println("count = " + count);
 
     }
 
     private static void task5() throws IOException {
         List<Animal> animals = Util.getAnimals();
-        //        animals.stream() Продолжить ...
+        long count = animals.stream()
+                .filter((animal) -> animal.getAge() >= 20 && animal.getAge() < 30
+                        && animal.getOrigin().equals("Hungarian"))
+                .count();
+        System.out.println("count = " + count);
     }
 
     private static void task6() throws IOException {
         List<Animal> animals = Util.getAnimals();
-        //        animals.stream() Продолжить ...
+        long count = animals.stream()
+                .takeWhile((animal) -> animal.getGender().equals("Male") && animal.getGender().equals("Female"))
+                .count();
+        System.out.println("Other Gender = " + count);
     }
 
     private static void task7() throws IOException {
         List<Animal> animals = Util.getAnimals();
-        //        animals.stream() Продолжить ...
+        long count = animals.stream()
+                .takeWhile(animal -> animal.getOrigin().equals("Oceania"))
+                .count();
+        System.out.println("The Number Of Animals That Have a Country of Origin Oceania = " + count);
     }
 
     private static void task8() throws IOException {
         List<Animal> animals = Util.getAnimals();
-        //        animals.stream() Продолжить ...
+        Optional<Integer> max = animals.stream()
+                .sorted(Comparator.comparing(Animal::getBread))
+                .limit(100)
+                .map(Animal::getAge)
+                .max(Integer::compare);
+        System.out.println("Age of The Oldest Animal= " + max);
     }
 
     private static void task9() throws IOException {
         List<Animal> animals = Util.getAnimals();
-        //        animals.stream() Продолжить ...
+        Optional<char[]> min = animals.stream()
+                .map((animal) -> animal.getBread().toCharArray())
+                .min(Comparator.comparing(chars -> chars.length));
+        System.out.println("Shortest Array = " + min.get().length);
     }
 
     private static void task10() throws IOException {
         List<Animal> animals = Util.getAnimals();
-        //        animals.stream() Продолжить ...
+        int sum = animals.stream()
+                .mapToInt(Animal::getAge)
+                .sum();
+        System.out.println("Total Age of All Animals = " + sum);
+
+
     }
 
     private static void task11() throws IOException {
         List<Animal> animals = Util.getAnimals();
-        //        animals.stream() Продолжить ...
+        OptionalDouble indonesian = animals.stream()
+                .filter(animal -> animal.getOrigin().equals("Indonesian"))
+                .mapToInt(Animal::getAge)
+                .average();
+        System.out.println("Average Age of All Animals From Indonesia = " + indonesian);
     }
 
     private static void task12() throws IOException {
         List<Person> people = Util.getPersons();
-//        Продолжить...
+        people.stream()
+                .filter((person) -> person.getGender().equals("Male")
+                        && Period.between(person.getDateOfBirth(), LocalDate.now()).getYears() >=18
+                        && Period.between(person.getDateOfBirth(), LocalDate.now()).getYears() <27
+                        && person.getRecruitmentGroup()<=3)
+                .sorted(Comparator.comparing(Person::getRecruitmentGroup))
+                .limit(200)
+                .forEach(System.out::println);
     }
 
     private static void task13() throws IOException {
         List<House> houses = Util.getHouses();
-        //        Продолжить...
+        Map<String, List<Person>> map = new HashMap<>();
+        map.put("Hospital",  houses.stream().filter(house -> house.getBuildingType().equals("Hospital"))
+                .map(House::getPersonList).flatMap(Collection::stream).collect(Collectors.toList()));
+        map.put("Civil building",  houses.stream()
+                .map(House::getPersonList)
+                .flatMap(Collection::stream)
+                                .filter((person) ->
+                                        Period.between(person.getDateOfBirth(), LocalDate.now()).getYears() >18 &&
+                                                Period.between(person.getDateOfBirth(), LocalDate.now()).getYears() <60)
+                .limit(460)
+                .collect(Collectors.toList()));
+        System.out.println("map = " + map);
     }
 
     private static void task14() throws IOException {
         List<Car> cars = Util.getCars();
-        //        Продолжить...
+        List <Car>carList = new CopyOnWriteArrayList(cars);
+       carList.stream()
+                .filter((car1) -> car1.getCarMake().equals("Jaguar") ||
+                        car1.getColor().equals("White"))
+                .peek(carList1 -> {
+                    double v = carList1.getMass() * 7.14;
+                    System.out.println("Туркменистан " + carList1+ " Стоимость растаможки" + v);
+                })
+               .map(carList::remove)
+               .collect(Collectors.toList());
+
+        carList.stream()
+                .filter((car) -> car.getMass() < 1500 ||
+                        car.getCarMake().equals("BMW") &&
+                        car.getCarMake().equals("Lexus") &&
+                        car.getCarMake().equals("Chrysler") &&
+                        car.getCarMake().equals("Toyota"))
+                .peek(carList1 -> {
+                    double v = carList1.getMass() * 7.14;
+                    System.out.println("Узбекистан " + carList1 + " Стоимость растаможки" + v);
+                })
+                .map(carList::remove)
+                .collect(Collectors.toList());
+        carList.stream()
+                .filter((car) -> car.getColor().equals("Black") &&
+                        car.getMass() > 4000 ||
+                        car.getCarMake().equals("GMC") ||
+                        car.getCarMake().equals("Dodge"))
+                .peek(carList1 -> {
+                    double v = carList1.getMass() * 7.14;
+                    System.out.println("Казахстан " + carList1 + " Стоимость растаможки" + v);
+                })
+                .map(carList::remove)
+                .collect(Collectors.toList());
+        carList.stream()
+                .filter((car) -> car.getReleaseYear() < 1982 ||
+                        car.getCarMake().equals("Civic") &&
+                        car.getCarMake().equals("Cherokee"))
+                .peek(carList1 -> {
+                    double v = carList1.getMass() * 7.14;
+                    System.out.println("Кыргызстан " + carList1 + " Стоимость растаможки" + v);
+                })
+                .map(carList::remove)
+                .collect(Collectors.toList());
+        carList.stream()
+                .filter((car) -> car.getPrice() > 40000 &&
+                        !Objects.equals(car.getColor(), "Yellow") &&
+                !Objects.equals(car.getColor(), "Red") &&
+                !Objects.equals(car.getColor(), "Green") &&
+                        !Objects.equals(car.getColor(), "Blue"))
+                .peek(carList1 -> {
+                    double v = carList1.getMass() * 7.14;
+                    System.out.println("Россия " + carList1 + " Стоимость растаможки" + v);
+                })
+                .map(carList::remove)
+                .collect(Collectors.toList());
+        carList.stream()
+                .filter((car) -> car.getVin().contains("59"))
+                .peek(carList1 -> {
+                    double v = carList1.getMass() * 7.14;
+                    System.out.println("Монголия " + carList1 + " Стоимость растаможки" + v);
+                })
+                .map(carList::remove)
+                .collect(Collectors.toList());
     }
 
     private static void task15() throws IOException {
+    List<Double> sum = new ArrayList<>();
         List<Flower> flowers = Util.getFlowers();
-        //        Продолжить...
+    flowers.stream()
+                .sorted(Comparator.comparing(Flower::getOrigin).reversed())
+                .sorted(Comparator.comparingInt(Flower::getPrice))
+                .sorted(Comparator.comparingDouble(Flower::getWaterConsumptionPerDay).reversed())
+                .filter(flower -> flower.getCommonName().matches("^[C-S].*"))
+                .filter(Flower::isShadePreferred)
+                .filter((flower) -> flower.getFlowerVaseMaterial().contains("Aluminum")&&
+                        flower.getFlowerVaseMaterial().contains("Glass")&&
+                        flower.getFlowerVaseMaterial().contains("Steel"))
+                .peek(flower -> {
+                    double v = flower.getWaterConsumptionPerDay() * 1826 * 1.39;
+                    double v1 = flower.getPrice() + v;
+                    System.out.println("Затраты на цветок: " +flower +" = "+ v1+"$");
+                    sum.add(v1);
+                })
+                .collect(Collectors.toList());
+        System.out.println("Общая сумма обслуживания всех растений = " + sum.stream().mapToDouble(Double::shortValue).sum());
     }
 }

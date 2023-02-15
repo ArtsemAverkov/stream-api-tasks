@@ -1,15 +1,14 @@
-package by.sologub.util;
+package by.averkov.utils;
 
-import by.sologub.model.Animal;
-import by.sologub.model.Car;
-import by.sologub.model.Flower;
-import by.sologub.model.House;
-import by.sologub.model.Person;
+import by.averkov.model.Animal;
+import by.averkov.model.Car;
+import by.averkov.model.Flower;
+import by.averkov.model.House;
+import by.averkov.model.Person;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
-import lombok.SneakyThrows;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,10 +17,10 @@ import java.util.List;
 import java.util.Locale;
 
 public class Util {
-    public static final String animalsDataFileName = "src\\main\\resources\\animals.json";
-    public static final String recruitsDataFileName = "src\\main\\resources\\recruits.json";
-    public static final String carsDataFileName = "src\\main\\resources\\cars.json";
-    public static final String flowersDataFileName = "src\\main\\resources\\flowers.json";
+    public static final String animalsDataFileName = "src/main/resources/animals.json";
+    public static final String recruitsDataFileName = "src/main/resources/recruits.json";
+    public static final String carsDataFileName = "src/main/resources/cars.json";
+    public static final String flowersDataFileName = "src/main/resources/flowers.json";
     public static final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
     public static List<Animal> getAnimals() throws IOException {

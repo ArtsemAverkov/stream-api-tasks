@@ -1,4 +1,4 @@
-package by.sologub.model;
+package by.averkov.model;
 
 import java.util.List;
 
