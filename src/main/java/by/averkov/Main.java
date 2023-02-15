@@ -175,11 +175,11 @@ public class Main {
         List<Car> cars = Util.getCars();
         List <Car>carList = new CopyOnWriteArrayList(cars);
        carList.stream()
-                .filter((car1) -> car1.getCarMake().equals("Jaguar") ||
-                        car1.getColor().equals("White"))
-                .peek(carList1 -> {
-                    double v = carList1.getMass() * 7.14;
-                    System.out.println("Туркменистан " + carList1+ " Стоимость растаможки" + v);
+                .filter((car) -> car.getCarMake().equals("Jaguar") ||
+                        car.getColor().equals("White"))
+                .peek(carLists -> {
+                    double v = carLists.getMass() * 7.14;
+                    System.out.println("Туркменистан " + carLists+ " Стоимость растаможки" + v);
                 })
                .map(carList::remove)
                .collect(Collectors.toList());
@@ -190,9 +190,9 @@ public class Main {
                         car.getCarMake().equals("Lexus") &&
                         car.getCarMake().equals("Chrysler") &&
                         car.getCarMake().equals("Toyota"))
-                .peek(carList1 -> {
-                    double v = carList1.getMass() * 7.14;
-                    System.out.println("Узбекистан " + carList1 + " Стоимость растаможки" + v);
+                .peek(carLists -> {
+                    double v = carLists.getMass() * 7.14;
+                    System.out.println("Узбекистан " + carLists + " Стоимость растаможки" + v);
                 })
                 .map(carList::remove)
                 .collect(Collectors.toList());
@@ -201,9 +201,9 @@ public class Main {
                         car.getMass() > 4000 ||
                         car.getCarMake().equals("GMC") ||
                         car.getCarMake().equals("Dodge"))
-                .peek(carList1 -> {
-                    double v = carList1.getMass() * 7.14;
-                    System.out.println("Казахстан " + carList1 + " Стоимость растаможки" + v);
+                .peek(carLists -> {
+                    double v = carLists.getMass() * 7.14;
+                    System.out.println("Казахстан " + carLists + " Стоимость растаможки" + v);
                 })
                 .map(carList::remove)
                 .collect(Collectors.toList());
@@ -211,9 +211,9 @@ public class Main {
                 .filter((car) -> car.getReleaseYear() < 1982 ||
                         car.getCarMake().equals("Civic") &&
                         car.getCarMake().equals("Cherokee"))
-                .peek(carList1 -> {
-                    double v = carList1.getMass() * 7.14;
-                    System.out.println("Кыргызстан " + carList1 + " Стоимость растаможки" + v);
+                .peek(carLists -> {
+                    double v = carLists.getMass() * 7.14;
+                    System.out.println("Кыргызстан " + carLists + " Стоимость растаможки" + v);
                 })
                 .map(carList::remove)
                 .collect(Collectors.toList());
@@ -223,24 +223,24 @@ public class Main {
                 !Objects.equals(car.getColor(), "Red") &&
                 !Objects.equals(car.getColor(), "Green") &&
                         !Objects.equals(car.getColor(), "Blue"))
-                .peek(carList1 -> {
-                    double v = carList1.getMass() * 7.14;
-                    System.out.println("Россия " + carList1 + " Стоимость растаможки" + v);
+                .peek(carLists -> {
+                    double v = carLists.getMass() * 7.14;
+                    System.out.println("Россия " + carLists + " Стоимость растаможки" + v);
                 })
                 .map(carList::remove)
                 .collect(Collectors.toList());
         carList.stream()
                 .filter((car) -> car.getVin().contains("59"))
-                .peek(carList1 -> {
-                    double v = carList1.getMass() * 7.14;
-                    System.out.println("Монголия " + carList1 + " Стоимость растаможки" + v);
+                .peek(carLists -> {
+                    double v = carLists.getMass() * 7.14;
+                    System.out.println("Монголия " + carLists + " Стоимость растаможки" + v);
                 })
                 .map(carList::remove)
                 .collect(Collectors.toList());
     }
 
     private static void task15() throws IOException {
-    List<Double> sum = new ArrayList<>();
+    List<Double> sumList = new ArrayList<>();
         List<Flower> flowers = Util.getFlowers();
     flowers.stream()
                 .sorted(Comparator.comparing(Flower::getOrigin).reversed())
@@ -252,12 +252,12 @@ public class Main {
                         flower.getFlowerVaseMaterial().contains("Glass")&&
                         flower.getFlowerVaseMaterial().contains("Steel"))
                 .peek(flower -> {
-                    double v = flower.getWaterConsumptionPerDay() * 1826 * 1.39;
-                    double v1 = flower.getPrice() + v;
-                    System.out.println("Затраты на цветок: " +flower +" = "+ v1+"$");
-                    sum.add(v1);
+                    double sum = flower.getWaterConsumptionPerDay() * 1826 * 1.39;
+                    double allSum = flower.getPrice() + sum;
+                    System.out.println("Затраты на цветок: " +flower +" = "+ allSum+"$");
+                    sumList.add(allSum);
                 })
                 .collect(Collectors.toList());
-        System.out.println("Общая сумма обслуживания всех растений = " + sum.stream().mapToDouble(Double::shortValue).sum());
+        System.out.println("Общая сумма обслуживания всех растений = " + sumList.stream().mapToDouble(Double::shortValue).sum());
     }
 }
